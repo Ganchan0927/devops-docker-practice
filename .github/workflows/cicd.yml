@@ -22,3 +22,17 @@ build:
     - uses: actions/checkout@v4
     - name: Build Docker image
       run: docker build -t my-app .
+
+deploy-staging:
+    needs: build
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy to STAGING"
+
+deploy-prod:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy to PRODUCTION"
