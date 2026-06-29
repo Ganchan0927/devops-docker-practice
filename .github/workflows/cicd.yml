@@ -50,5 +50,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to production
-        run: echo "Deploying to PRODUCTION environment"
+      - name: Pull image
+        run: docker pull ghcr.io/ganchan0927/devops-docker-practice:latest
+     
+      - name: Run container
+        run: docker run -d -p 3000:3000 ghcr.io/ganchan0927/devops-docker-practice:latest
+  
