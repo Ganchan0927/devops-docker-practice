@@ -30,10 +30,14 @@ jobs:
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/ganchan0927/devops-docker-practice:latest .
+        run: |
+          docker build -t ghcr.io/ganchan0927/devops-docker-practice:latest .
+
       - name: Push Docker image
-        run: docker push ghcr.io/ganchan0927/devops-docker-practice:latest
-        
+        run: |
+          docker push ghcr.io/ganchan0927/devops-docker-practice:latest
+
+  deploy-staging:
     needs: build
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
