@@ -13,26 +13,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-      - run: node test.js
+      - name: Run tests
+        run: node test.js
 
   build:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Build Docker image
-        run: docker build -t my-app .
+        run: docker build -t ghcr.io/${{ github.repository }}:latest .
+
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository }}:latest
 
   deploy-staging:
     needs: build
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Deploy to STAGING"
+      - name: Deploy to staging
+        run: echo "Deploying to STAGING environment"
 
   deploy-prod:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Deploy to PRODUCTION"
+      - name: Deploy to production
+        run: echo "Deploying to PRODUCTION environment"
