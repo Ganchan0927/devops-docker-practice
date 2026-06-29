@@ -13,3 +13,4 @@ if (require.main === module) {
 }
 
 module.exports = { add };
+console.log("feature test")
